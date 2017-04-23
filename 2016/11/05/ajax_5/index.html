@@ -1,0 +1,835 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ajax," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="核心
+jQuery. ajaxPrefilter前置处理器jQuery. ajaxTransport请求分发器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ajax源码解析-jQuery. ajaxPrefilter和jQuery. ajaxTransport">
+<meta property="og:url" content="http://yoursite.com/2016/11/05/ajax_5/index.html">
+<meta property="og:site_name" content="Sunbaixin Blog">
+<meta property="og:description" content="核心
+jQuery. ajaxPrefilter前置处理器jQuery. ajaxTransport请求分发器">
+<meta property="og:image" content="http://yoursite.com/uploads/ajax_6.png">
+<meta property="og:updated_time" content="2017-04-01T06:51:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ajax源码解析-jQuery. ajaxPrefilter和jQuery. ajaxTransport">
+<meta name="twitter:description" content="核心
+jQuery. ajaxPrefilter前置处理器jQuery. ajaxTransport请求分发器">
+<meta name="twitter:image" content="http://yoursite.com/uploads/ajax_6.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/05/ajax_5/"/>
+
+
+  <title> ajax源码解析-jQuery. ajaxPrefilter和jQuery. ajaxTransport | Sunbaixin Blog </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta custom-logo">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sunbaixin Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Goals determine what you are going to be</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ajax源码解析-jQuery. ajaxPrefilter和jQuery. ajaxTransport
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-05T22:04:42+08:00" content="2016-11-05">
+              2016-11-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/05/ajax_5/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/05/ajax_5/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+
+  
+        
+          
+
+          
+    
+
+    </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="核心"><a href="#核心" class="headerlink" title="核心"></a>核心</h3><blockquote>
+<p>jQuery. ajaxPrefilter前置处理器<br>jQuery. ajaxTransport请求分发器</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><p><img src="/uploads/ajax_6.png" alt=""></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://blog.csdn.net/liangklfang/article/details/49587209" target="_blank" rel="external">jQuery源码分析之ajaxTransport</a></p>
+<h3 id="源码注解"><a href="#源码注解" class="headerlink" title="源码注解"></a>源码注解</h3><figure class="highlight js"><table><tr><td class="code"><pre><div class="line">全局变量</div><div class="line"><span class="keyword">var</span> prefilter=&#123;&#125;;</div><div class="line">jQuery.extend(&#123;</div><div class="line">  <span class="attr">ajaxPrefilter</span>: addToPrefiltersOrTransports(prefilters),</div><div class="line">  <span class="attr">ajaxTransport</span>: addToPrefiltersOrTransports(transports),</div><div class="line">  &#125;)</div><div class="line">&lt;!--ajaxPrefilter和ajaxTransport的构造器--&gt;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">addToPrefiltersOrTransports</span>(<span class="params">structure</span>) </span>&#123;</div><div class="line"></div><div class="line">        <span class="comment">// dataTypeExpression is optional and defaults to "*"</span></div><div class="line">        &lt;!--返回的是一个函数 此处应用的就是闭包--&gt;</div><div class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">dataTypeExpression, func</span>) </span>&#123;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (<span class="keyword">typeof</span> dataTypeExpression !== <span class="string">"string"</span>) &#123;</div><div class="line">                func = dataTypeExpression;</div><div class="line">                dataTypeExpression = <span class="string">"*"</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (jQuery.isFunction(func)) &#123;</div><div class="line">                <span class="keyword">var</span> dataTypes = dataTypeExpression.toLowerCase().split(rspacesAjax),</div><div class="line">                    i = <span class="number">0</span>,</div><div class="line">                    length = dataTypes.length,</div><div class="line">                    dataType,</div><div class="line">                    list,</div><div class="line">                    placeBefore;</div><div class="line"></div><div class="line">                <span class="comment">// For each dataType in the dataTypeExpression</span></div><div class="line">                <span class="keyword">for</span> (; i &lt; length; i++) &#123;</div><div class="line">                    dataType = dataTypes[i];</div><div class="line">                    <span class="comment">// We control if we're asked to add before</span></div><div class="line">                    <span class="comment">// any existing element</span></div><div class="line">                    placeBefore = <span class="regexp">/^\+/</span>.test(dataType);</div><div class="line">                    <span class="keyword">if</span> (placeBefore) &#123;</div><div class="line">                        dataType = dataType.substr(<span class="number">1</span>) || <span class="string">"*"</span>;</div><div class="line">                    &#125;</div><div class="line">                    list = structure[dataType] = structure[dataType] || [];</div><div class="line">                    <span class="comment">// then we add to the structure accordingly</span></div><div class="line">                    list[placeBefore ? <span class="string">"unshift"</span> : <span class="string">"push"</span>](func);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+ <!--依次全局调用jQuery.ajaxPrefilter函数，会把dataType：json jsonp script封装在 全局对象prefilter之中
+  Object {json: Array[1], jsonp: Array[1],script:Array[1]}
+  prefilter.jsonp[0]返回的是对数据类型为jsonp的预处理函数-->
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line">jQuery.ajaxPrefilter(<span class="string">"script"</span>, <span class="function"><span class="keyword">function</span> (<span class="params">s</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (s.cache === <span class="literal">undefined</span>) &#123;</div><div class="line">            s.cache = <span class="literal">false</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (s.crossDomain) &#123;</div><div class="line">            s.type = <span class="string">"GET"</span>;</div><div class="line">            s.global = <span class="literal">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">jQuery.ajaxPrefilter(<span class="string">"json jsonp"</span>, <span class="function"><span class="keyword">function</span> (<span class="params">s, originalSettings, jqXHR</span>) </span>&#123;</div><div class="line">    </div><div class="line">            <span class="keyword">var</span> inspectData = s.contentType === <span class="string">"application/x-www-form-urlencoded"</span> &amp;&amp;</div><div class="line">                ( <span class="keyword">typeof</span> s.data === <span class="string">"string"</span> );</div><div class="line">    </div><div class="line">            <span class="keyword">if</span> (s.dataTypes[<span class="number">0</span>] === <span class="string">"jsonp"</span> ||</div><div class="line">                s.jsonp !== <span class="literal">false</span> &amp;&amp; ( jsre.test(s.url) ||</div><div class="line">                inspectData &amp;&amp; jsre.test(s.data) )) &#123;</div><div class="line">    </div><div class="line">                <span class="keyword">var</span> responseContainer,</div><div class="line">                    jsonpCallback = s.jsonpCallback =</div><div class="line">                        jQuery.isFunction(s.jsonpCallback) ? s.jsonpCallback() : s.jsonpCallback,</div><div class="line">                    previous = <span class="built_in">window</span>[jsonpCallback],</div><div class="line">                    url = s.url,</div><div class="line">                    data = s.data,</div><div class="line">                    replace = <span class="string">"$1"</span> + jsonpCallback + <span class="string">"$2"</span>;</div><div class="line">    </div><div class="line">                <span class="keyword">if</span> (s.jsonp !== <span class="literal">false</span>) &#123;</div><div class="line">                    url = url.replace(jsre, replace);</div><div class="line">                    <span class="keyword">if</span> (s.url === url) &#123;</div><div class="line">                        <span class="keyword">if</span> (inspectData) &#123;</div><div class="line">                            data = data.replace(jsre, replace);</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">if</span> (s.data === data) &#123;</div><div class="line">                            <span class="comment">// Add callback manually</span></div><div class="line">                            url += (<span class="regexp">/\?/</span>.test(url) ? <span class="string">"&amp;"</span> : <span class="string">"?"</span>) + s.jsonp + <span class="string">"="</span> + jsonpCallback;</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">    </div><div class="line">                s.url = url;</div><div class="line">                s.data = data;</div><div class="line">    </div><div class="line">                <span class="comment">// Install callback</span></div><div class="line">                <span class="built_in">window</span>[jsonpCallback] = <span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</div><div class="line">                    responseContainer = [response];</div><div class="line">                &#125;;</div><div class="line">    </div><div class="line">                <span class="comment">// Clean-up function</span></div><div class="line">                jqXHR.always(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                    <span class="comment">// Set callback back to previous value</span></div><div class="line">                    <span class="built_in">window</span>[jsonpCallback] = previous;</div><div class="line">                    <span class="comment">// Call if it was a function and we have a response</span></div><div class="line">                    <span class="keyword">if</span> (responseContainer &amp;&amp; jQuery.isFunction(previous)) &#123;</div><div class="line">                        <span class="built_in">window</span>[jsonpCallback](responseContainer[<span class="number">0</span>]);</div><div class="line">                    &#125;</div><div class="line">                &#125;);</div><div class="line">    </div><div class="line">                <span class="comment">// Use data converter to retrieve json after script execution</span></div><div class="line">                s.converters[<span class="string">"script json"</span>] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                    <span class="keyword">if</span> (!responseContainer) &#123;</div><div class="line">                        jQuery.error(jsonpCallback + <span class="string">" was not called"</span>);</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">return</span> responseContainer[<span class="number">0</span>];</div><div class="line">                &#125;;</div><div class="line">    </div><div class="line">                <span class="comment">// force json dataType</span></div><div class="line">                s.dataTypes[<span class="number">0</span>] = <span class="string">"json"</span>;</div><div class="line">    </div><div class="line">                <span class="comment">// Delegate to script</span></div><div class="line">                <span class="keyword">return</span> <span class="string">"script"</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure>
+<!--依次全局调用jQuery.ajaxTransport函数，会把dataType：json jsonp script封装在 全局对象transports之中
+  Object {script: Array[1],*:Array[1]}
+  transports.script[0]返回的是对数据类型为script的预处理函数  即对跨域的处理
+  后者是对xmlHttpRequest的处理  
+  返回的对象调用方法一致{send:{},abort:()}
+  -->
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line">&lt;!--处理跨域情况的--&gt;</div><div class="line"> jQuery.ajaxTransport(<span class="string">"script"</span>, <span class="function"><span class="keyword">function</span> (<span class="params">s</span>) </span>&#123;</div><div class="line"></div><div class="line">        <span class="comment">// This transport only deals with cross domain requests</span></div><div class="line">        <span class="keyword">if</span> (s.crossDomain) &#123;</div><div class="line"></div><div class="line">            <span class="keyword">var</span> script,</div><div class="line">                head = <span class="built_in">document</span>.head || <span class="built_in">document</span>.getElementsByTagName(<span class="string">"head"</span>)[<span class="number">0</span>] || <span class="built_in">document</span>.documentElement;</div><div class="line"></div><div class="line">            <span class="keyword">return</span> &#123;</div><div class="line"></div><div class="line">                <span class="attr">send</span>: <span class="function"><span class="keyword">function</span> (<span class="params">_, callback</span>) </span>&#123;</div><div class="line"></div><div class="line">                    script = <span class="built_in">document</span>.createElement(<span class="string">"script"</span>);</div><div class="line"></div><div class="line">                    script.async = <span class="string">"async"</span>;</div><div class="line"></div><div class="line">                    <span class="keyword">if</span> (s.scriptCharset) &#123;</div><div class="line">                        script.charset = s.scriptCharset;</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    script.src = s.url;</div><div class="line"></div><div class="line">                    <span class="comment">// Attach handlers for all browsers</span></div><div class="line">                    script.onload = script.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params">_, isAbort</span>) </span>&#123;</div><div class="line"></div><div class="line">                        <span class="keyword">if</span> (isAbort || !script.readyState || <span class="regexp">/loaded|complete/</span>.test(script.readyState)) &#123;</div><div class="line"></div><div class="line">                            <span class="comment">// Handle memory leak in IE</span></div><div class="line">                            script.onload = script.onreadystatechange = <span class="literal">null</span>;</div><div class="line"></div><div class="line">                            <span class="comment">// Remove the script</span></div><div class="line">                            <span class="keyword">if</span> (head &amp;&amp; script.parentNode) &#123;</div><div class="line">                                head.removeChild(script);</div><div class="line">                            &#125;</div><div class="line"></div><div class="line">                            <span class="comment">// Dereference the script</span></div><div class="line">                            script = <span class="literal">undefined</span>;</div><div class="line"></div><div class="line">                            <span class="comment">// Callback if not abort</span></div><div class="line">                            <span class="keyword">if</span> (!isAbort) &#123;</div><div class="line">                                callback(<span class="number">200</span>, <span class="string">"success"</span>);</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                    &#125;;</div><div class="line">                    <span class="comment">// Use insertBefore instead of appendChild  to circumvent an IE6 bug.</span></div><div class="line">                    <span class="comment">// This arises when a base node is used (#2709 and #4378).</span></div><div class="line">                    head.insertBefore(script, head.firstChild);</div><div class="line">                &#125;,</div><div class="line"></div><div class="line">                <span class="attr">abort</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                    <span class="keyword">if</span> (script) &#123;</div><div class="line">                        script.onload(<span class="number">0</span>, <span class="number">1</span>);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    <span class="xml"><span class="comment">&lt;!--处理xmlHttpRequest请求--&gt;</span></span></div><div class="line">    if (jQuery.support.ajax) &#123;</div><div class="line">    </div><div class="line">            jQuery.ajaxTransport(function (s) &#123;</div><div class="line">                // Cross domain only allowed if supported through XMLHttpRequest</div><div class="line">                if (!s.crossDomain || jQuery.support.cors) &#123;</div><div class="line">    </div><div class="line">                    var callback;</div><div class="line">    </div><div class="line">                    return &#123;</div><div class="line">                        send: function (headers, complete) &#123;</div><div class="line">    </div><div class="line">                            // Get a new xhr</div><div class="line">                            var xhr = s.xhr(),</div><div class="line">                                handle,</div><div class="line">                                i;</div><div class="line">    </div><div class="line">                            // Open the socket</div><div class="line">                            // Passing null username, generates a login popup on Opera (#2865)</div><div class="line">                            if (s.username) &#123;</div><div class="line">                                xhr.open(s.type, s.url, s.async, s.username, s.password);</div><div class="line">                            &#125; else &#123;</div><div class="line">                                xhr.open(s.type, s.url, s.async);</div><div class="line">                            &#125;</div><div class="line">    </div><div class="line">                            // Apply custom fields if provided</div><div class="line">                            if (s.xhrFields) &#123;</div><div class="line">                                for (i in s.xhrFields) &#123;</div><div class="line">                                    xhr[i] = s.xhrFields[i];</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">    </div><div class="line">                            // Override mime type if needed</div><div class="line">                            if (s.mimeType &amp;&amp; xhr.overrideMimeType) &#123;</div><div class="line">                                xhr.overrideMimeType(s.mimeType);</div><div class="line">                            &#125;</div><div class="line">    </div><div class="line">                            // X-Requested-With header</div><div class="line">                            // For cross-domain requests, seeing as conditions for a preflight are</div><div class="line">                            // akin to a jigsaw puzzle, we simply never set it to be sure.</div><div class="line">                            // (it can always be set on a per-request basis or even using ajaxSetup)</div><div class="line">                            // For same-domain requests, won't change header if already provided.</div><div class="line">                            if (!s.crossDomain &amp;&amp; !headers["X-Requested-With"]) &#123;</div><div class="line">                                headers["X-Requested-With"] = "XMLHttpRequest";</div><div class="line">                            &#125;</div><div class="line">    </div><div class="line">                            // Need an extra try/catch for cross domain requests in Firefox 3</div><div class="line">                            try &#123;</div><div class="line">                                for (i in headers) &#123;</div><div class="line">                                    xhr.setRequestHeader(i, headers[i]);</div><div class="line">                                &#125;</div><div class="line">                            &#125; catch (_) &#123;</div><div class="line">                            &#125;</div><div class="line">    </div><div class="line">                            // Do send the request</div><div class="line">                            // This may raise an exception which is actually</div><div class="line">                            // handled in jQuery.ajax (so no try/catch here)</div><div class="line">                            xhr.send(( s.hasContent &amp;&amp; s.data ) || null);</div><div class="line">    </div><div class="line">                            // Listener</div><div class="line">                            callback = function (_, isAbort) &#123;</div><div class="line">    </div><div class="line">                                var status,</div><div class="line">                                    statusText,</div><div class="line">                                    responseHeaders,</div><div class="line">                                    responses,</div><div class="line">                                    xml;</div><div class="line">    </div><div class="line">                                // Firefox throws exceptions when accessing properties</div><div class="line">                                // of an xhr when a network error occured</div><div class="line">                                // http://helpful.knobs-dials.com/index.php/Component_returned_failure_code:_0x80040111_(NS_ERROR_NOT_AVAILABLE)</div><div class="line">                                try &#123;</div><div class="line">    </div><div class="line">                                    // Was never called and is aborted or complete</div><div class="line">                                    if (callback &amp;&amp; ( isAbort || xhr.readyState === 4 )) &#123;</div><div class="line">    </div><div class="line">                                        // Only called once</div><div class="line">                                        callback = undefined;</div><div class="line">    </div><div class="line">                                        // Do not keep as active anymore</div><div class="line">                                        if (handle) &#123;</div><div class="line">                                            xhr.onreadystatechange = jQuery.noop;</div><div class="line">                                            if (xhrOnUnloadAbort) &#123;</div><div class="line">                                                delete xhrCallbacks[handle];</div><div class="line">                                            &#125;</div><div class="line">                                        &#125;</div><div class="line">    </div><div class="line">                                        // If it's an abort</div><div class="line">                                        if (isAbort) &#123;</div><div class="line">                                            // Abort it manually if needed</div><div class="line">                                            if (xhr.readyState !== 4) &#123;</div><div class="line">                                                xhr.abort();</div><div class="line">                                            &#125;</div><div class="line">                                        &#125; else &#123;</div><div class="line">                                            status = xhr.status;</div><div class="line">                                            responseHeaders = xhr.getAllResponseHeaders();</div><div class="line">                                            responses = &#123;&#125;;</div><div class="line">                                            xml = xhr.responseXML;</div><div class="line">    </div><div class="line">                                            // Construct response list</div><div class="line">                                            if (xml &amp;&amp; xml.documentElement /* #4958 */) &#123;</div><div class="line">                                                responses.xml = xml;</div><div class="line">                                            &#125;</div><div class="line">                                            responses.text = xhr.responseText;</div><div class="line">    </div><div class="line">                                            // Firefox throws an exception when accessing</div><div class="line">                                            // statusText for faulty cross-domain requests</div><div class="line">                                            try &#123;</div><div class="line">                                                statusText = xhr.statusText;</div><div class="line">                                            &#125; catch (e) &#123;</div><div class="line">                                                // We normalize with Webkit giving an empty statusText</div><div class="line">                                                statusText = "";</div><div class="line">                                            &#125;</div><div class="line">    </div><div class="line">                                            // Filter status for non standard behaviors</div><div class="line">    </div><div class="line">                                            // If the request is local and we have data: assume a success</div><div class="line">                                            // (success with no data won't get notified, that's the best we</div><div class="line">                                            // can do given current implementations)</div><div class="line">                                            if (!status &amp;&amp; s.isLocal &amp;&amp; !s.crossDomain) &#123;</div><div class="line">                                                status = responses.text ? 200 : 404;</div><div class="line">                                                // IE - #1450: sometimes returns 1223 when it should be 204</div><div class="line">                                            &#125; else if (status === 1223) &#123;</div><div class="line">                                                status = 204;</div><div class="line">                                            &#125;</div><div class="line">                                        &#125;</div><div class="line">                                    &#125;</div><div class="line">                                &#125; catch (firefoxAccessException) &#123;</div><div class="line">                                    if (!isAbort) &#123;</div><div class="line">                                        complete(-1, firefoxAccessException);</div><div class="line">                                    &#125;</div><div class="line">                                &#125;</div><div class="line">    </div><div class="line">                                // Call complete if needed</div><div class="line">                                if (responses) &#123;</div><div class="line">                                    complete(status, statusText, responses, responseHeaders);</div><div class="line">                                &#125;</div><div class="line">                            &#125;;</div><div class="line">    </div><div class="line">                            // if we're in sync mode or it's in cache</div><div class="line">                            // and has been retrieved directly (IE6 &amp; IE7)</div><div class="line">                            // we need to manually fire the callback</div><div class="line">                            if (!s.async || xhr.readyState === 4) &#123;</div><div class="line">                                callback();</div><div class="line">                            &#125; else &#123;</div><div class="line">                                handle = ++xhrId;</div><div class="line">                                if (xhrOnUnloadAbort) &#123;</div><div class="line">                                    // Create the active xhrs callbacks list if needed</div><div class="line">                                    // and attach the unload handler</div><div class="line">                                    if (!xhrCallbacks) &#123;</div><div class="line">                                        xhrCallbacks = &#123;&#125;;</div><div class="line">                                        jQuery(window).unload(xhrOnUnloadAbort);</div><div class="line">                                    &#125;</div><div class="line">                                    // Add to list of active xhrs callbacks</div><div class="line">                                    xhrCallbacks[handle] = callback;</div><div class="line">                                &#125;</div><div class="line">                                xhr.onreadystatechange = callback;</div><div class="line">                            &#125;</div><div class="line">                        &#125;,</div><div class="line">    </div><div class="line">                        abort: function () &#123;</div><div class="line">                            if (callback) &#123;</div><div class="line">                                callback(0, 1);</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                    &#125;;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/erweima.png" alt="sunbaixin wechat" style="width: 200px; max-width: 100%;"/>
+    <div>扫描上方二维码，关注我的博客</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ajax/" rel="tag">#ajax</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/05/ajax_3/" rel="next" title="ajax源码解析-jQuery ajax相关函数">
+                <i class="fa fa-chevron-left"></i> ajax源码解析-jQuery ajax相关函数
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/06/closure/" rel="prev" title="深入理解javascript的闭包特性">
+                深入理解javascript的闭包特性 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/05/ajax_5/"
+           data-title="ajax源码解析-jQuery. ajaxPrefilter和jQuery. ajaxTransport" data-url="http://yoursite.com/2016/11/05/ajax_5/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/head3.jpg"
+               alt="sunbaixin" />
+          <p class="site-author-name" itemprop="name">sunbaixin</p>
+          <p class="site-description motion-element" itemprop="description">Confidence optimistic</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">50</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/hello-sunbaixin" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://javascript.ruanyifeng.com/" target="_blank" title="阮一峰">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  阮一峰
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#核心"><span class="nav-number">1.</span> <span class="nav-text">核心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程图"><span class="nav-number">2.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码注解"><span class="nav-number">4.</span> <span class="nav-text">源码注解</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    total visited<span id="busuanzi_value_site_pv"></span>times
+</span>
+<span id="busuanzi_container_site_uv">
+  <span id="busuanzi_value_site_uv"></span>peoples
+</span>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sunbaixin</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"sunbaixin"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = false;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title >= 0 || index_content >= 0 ){
+                                isMatch = true;
+								if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            } 
+							
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

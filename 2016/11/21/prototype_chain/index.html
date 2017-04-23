@@ -1,0 +1,863 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="js,原型链," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="理解proto和prototype，才能更好的理解原型链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="__proto__（隐式原型）与prototype（显式原型）">
+<meta property="og:url" content="http://yoursite.com/2016/11/21/prototype_chain/index.html">
+<meta property="og:site_name" content="Sunbaixin blog">
+<meta property="og:description" content="理解proto和prototype，才能更好的理解原型链">
+<meta property="og:image" content="http://yoursite.com/uploads/prototypechain_2.png">
+<meta property="og:image" content="http://yoursite.com/uploads/prototypechain_1.png">
+<meta property="og:updated_time" content="2016-11-22T05:49:20.227Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="__proto__（隐式原型）与prototype（显式原型）">
+<meta name="twitter:description" content="理解proto和prototype，才能更好的理解原型链">
+<meta name="twitter:image" content="http://yoursite.com/uploads/prototypechain_2.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/21/prototype_chain/"/>
+
+
+  <title> __proto__（隐式原型）与prototype（显式原型） | Sunbaixin blog </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta custom-logo">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sunbaixin blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Goals determine what you are going to be</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                __proto__（隐式原型）与prototype（显式原型）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-21T15:43:14+08:00" content="2016-11-21">
+              2016-11-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/21/prototype_chain/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/21/prototype_chain/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+
+  
+        
+          
+
+          
+    
+
+    </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>理解<strong>proto</strong>和prototype，才能更好的理解原型链</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="一、-例子"><a href="#一、-例子" class="headerlink" title="一、 例子"></a>一、 例子</h2><p>在理解原型链之前，先看一个例子<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>(<span class="params"></span>)</span>&#123;&#125;;</div><div class="line">A.prototype.test=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;<span class="built_in">console</span>.log(<span class="string">"A"</span>)&#125;;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">B</span>(<span class="params"></span>)</span>&#123;&#125;;</div><div class="line">B.prototype=<span class="keyword">new</span> A();</div><div class="line"><span class="keyword">var</span> c=<span class="keyword">new</span> B();</div></pre></td></tr></table></figure></p>
+<p>请猜想c.constructor? 答：A</p>
+<p><strong>解答</strong><br>现在控制台打印c<br><img src="/uploads/prototypechain_2.png" alt="images"><br>对象c并没有constructor的属性，而是有内置属性<strong>proto</strong></p>
+<font color="#ff552e"> Note:对象c自身没有constructor属性,但是因为实例拥有构造函数原型上的属性和方法，所以实例c是能访问到constructor属性</font><br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">c.__proto__==B.prototype</div><div class="line">又因为</div><div class="line">B.prototype=<span class="keyword">new</span> A();</div><div class="line">所以</div><div class="line">B.prototype=p,p=<span class="keyword">new</span> A();</div><div class="line">p.__proto__=A.prototype;</div><div class="line">B.prototype.__proto__==A.prototype;</div><div class="line">所以</div><div class="line">c.__proto__.__proto__==A.prototype</div></pre></td></tr></table></figure><br><br><img src="/uploads/prototypechain_1.png" alt="images"><br>构造函数的原型上内置属性<strong>proto</strong>和constructor<br>构造函数的原型上的构造器函数又指向prototype属性所在函数<br><font color="#ff552e"> Note:注意实际过程中构造函数的原型是否被重写,像B.prototype=new A();就是被重写了，B.prototype上不存在constructor，就要去B.prototype.<strong>proto</strong>上去找</font>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">即A.prototype.constructor==A</div><div class="line">c.__proto__.__proto__.constructor==A.prototype.constructor==A;</div><div class="line">c.constructor==A</div></pre></td></tr></table></figure>
+<h2 id="二、什么是显示原型和隐式原型"><a href="#二、什么是显示原型和隐式原型" class="headerlink" title="二、什么是显示原型和隐式原型"></a>二、什么是显示原型和隐式原型</h2><p><strong>显示原型</strong><br>每一个函数在创建之后都会拥有一个名为prototype的属性，这个属性指向函数的原型对象</p>
+<p><font color="#ff552e">Note：通过Function.prototype.bind方法构造出来的函数是个例外，它没有prototype属性;</font><br><strong>隐式原型</strong><br>JavaScript中任意对象都有一个内置属性[[prototype]]，在ES5之前没有标准的方法访问这个内置属性，但是大多数浏览器都支持通过<strong>proto</strong>来访问。ES5中有了对于这个内置属性标准的Get方法Object.getPrototypeOf(). </p>
+<p><font color="#ff552e"> Note: Object.prototype 这个对象是个例外，它的<strong>proto</strong>值为null </font><br><strong>二者的关系：</strong><br><mark>隐式原型指向创建这个对象的函数(constructor)的prototype</mark></p>
+<h2 id="三、作用是什么"><a href="#三、作用是什么" class="headerlink" title="三、作用是什么"></a>三、作用是什么</h2><p><strong>显式原型的作用：</strong>用来实现基于原型的继承和属性的共享<br><strong>隐式原型的作用：</strong>构成原型链，同样用于实现基于原型的继承。举个例子，当我们访问obj这个对象中的x属性时，如果在obj中找不到，那么就会沿着<strong>proto</strong>依次查找。</p>
+<h2 id="四、proto的指向？"><a href="#四、proto的指向？" class="headerlink" title="四、proto的指向？"></a>四、<strong>proto</strong>的指向？</h2><p><strong>proto</strong>的指向到底如何判断呢？根据ECMA定义 ‘to the value of its constructor’s “prototype” ‘ —-指向创建这个对象的函数的显式原型。<br>所以关键的点在于找到创建这个对象的构造函数，接下来就来看一下<mark>JS中对象被创建的方式</mark>，一眼看过去似乎有三种方式：<br>（1）对象字面量的方式<br>（2）new 的方式<br>（3）ES5中的Object.create()</p>
+<p>但是我认为本质上只有一种方式，也就是通过new来创建。<br>为什么这么说呢，首先字面量的方式是一种为了开发人员更方便创建对象的一个语法糖，本质就是:<br> <figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> o = <span class="keyword">new</span> <span class="built_in">Object</span>(); </div><div class="line">o.xx = xx;</div><div class="line">o.yy=yy;</div></pre></td></tr></table></figure></p>
+<p>再来看看Object.create(),这是ES5中新增的方法，在这之前这被称为原型式继承，<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//道格拉斯在2006年写了一篇文章，题为 Prototypal Inheritance In JavaScript。在这篇文章中，他介绍了一种实现继承的方法，这种方法并没有使用严格意义上的构造函数。</span></div><div class="line"><span class="comment">//他的想法是借助原型可以基于已有的对象创建新对象，同时还不比因此创建自定义类型，为了达到这个目的，他给出了如下函数:</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">object</span>(<span class="params">o</span>)</span>&#123;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">F</span>(<span class="params"></span>)</span>&#123;&#125;</div><div class="line">    F.prototype = o;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> F()</div><div class="line">&#125;</div><div class="line"><span class="comment">//----- 《JavaScript高级程序设计》P169</span></div></pre></td></tr></table></figure></p>
+<p>所以从实现代码 return new F() 中我们可以看到，<mark>这依然是通过new来创建的。</mark><br>不同之处在于由 Object.create() 创建出来的对象没有构造函数，看到这里你是不是要问，没有构造函数我怎么知道它的<strong>proto</strong>指向哪里呢，其实这里说它没有构造函数是指在 Object.create() 函数外部我们不能访问到它的构造函数，然而在函数内部实现中是有的，它短暂地存在了那么一会儿。假设我们现在就在函数内部，可以看到对象的构造函数是F, 现在<br>//以下是用于验证的伪代码<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> f = <span class="keyword">new</span> F(); </div><div class="line"><span class="comment">//于是有</span></div><div class="line">f.__proto__ === F.prototype <span class="comment">//true</span></div><div class="line"><span class="comment">//又因为</span></div><div class="line">F.prototype === o;<span class="comment">//true</span></div><div class="line"><span class="comment">//所以</span></div><div class="line">f.__proto__ === o;</div></pre></td></tr></table></figure></p>
+<p>因此由Object.create(o)创建出来的对象它的隐式原型指向o。</p>
+<h3 id="举例子来巩固一下一个对象的proto指向谁了。"><a href="#举例子来巩固一下一个对象的proto指向谁了。" class="headerlink" title="举例子来巩固一下一个对象的proto指向谁了。"></a>举例子来巩固一下一个对象的<strong>proto</strong>指向谁了。</h3><p><strong>构造函数的显示原型的隐式原型：</strong><br>内建对象(built-in object)：比如Array()，Array.prototype.<strong>proto</strong>指向什么？<br>Array.prototype也是一个对象，对象就是由 Object() 这个构造函数创建的，因此:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Array</span>.prototype.__proto__ === <span class="built_in">Object</span>.prototype <span class="comment">//true，</span></div></pre></td></tr></table></figure></p>
+<p>或者也可以这么理解，<mark>所有的内建对象都是由Object()创建而来。</mark><br><strong>自定义对象</strong><br>1、 默认情况下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Foo</span>(<span class="params"></span>)</span>&#123;&#125;</div><div class="line"><span class="keyword">var</span> foo = <span class="keyword">new</span> Foo()</div><div class="line">Foo.prototype.__proto__ === <span class="built_in">Object</span>.prototype <span class="comment">//true 理由同上</span></div></pre></td></tr></table></figure></p>
+<p>2、 其他情况：<br>（1）<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Bar</span>(<span class="params"></span>)</span>&#123;&#125;</div><div class="line"><span class="comment">//这时我们想让Foo继承Bar</span></div><div class="line">Foo.prototype = <span class="keyword">new</span> Bar()</div><div class="line">Foo.prototype.__proto__ === Bar.prototype <span class="comment">//true</span></div></pre></td></tr></table></figure></p>
+<p>（2）<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//我们不想让Foo继承谁，但是我们要自己重新定义Foo.prototype</span></div><div class="line">Foo.prototype = &#123;  </div><div class="line"> <span class="attr">a</span>:<span class="number">10</span>,  </div><div class="line"> <span class="attr">b</span>:<span class="number">-10</span>  </div><div class="line">&#125;  </div><div class="line"> <span class="comment">//这种方式就是用了对象字面量的方式来创建一个对象，根据前文所述 </span></div><div class="line"> Foo.prototype.__proto__ === <span class="built_in">Object</span>.prototype</div></pre></td></tr></table></figure></p>
+<p><font color="#ff552e">注：</font>以上两种情况都等于完全重写了Foo.prototype，所以Foo.prototype.constructor也跟着改变了，于是乎constructor这个属性和原来的构造函数Foo（）也就切断了联系。<br><strong>构造函数的隐式原型</strong><br>既然是构造函数那么它就是Function（）的实例，因此也就指向Function.prototype,比如 Object.<strong>proto</strong> === Function.prototype</p>
+<h2 id="五、instanceof"><a href="#五、instanceof" class="headerlink" title="五、instanceof"></a>五、instanceof</h2><p>instanceof 操作符的内部实现机制和隐式原型、显式原型有直接的关系。instanceof的左值一般是一个对象，右值一般是一个构造函数，<mark>用来判断左值是否是右值的实例</mark>。它的内部实现原理是这样的：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//设 L instanceof R </span></div><div class="line"><span class="comment">//通过判断</span></div><div class="line"> L.__proto__.__proto__ ..... === R.prototype ？</div><div class="line"><span class="comment">//最终返回true or false</span></div></pre></td></tr></table></figure></p>
+<p>也就是沿着L的<strong>proto</strong>一直寻找到原型链末端，直到等于R.prototype为止。知道了这个也就知道为什么以下这些奇怪的表达式为什么会得到相应的值了<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Function</span> <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true </span></div><div class="line"><span class="built_in">Object</span> <span class="keyword">instanceof</span> <span class="built_in">Function</span> <span class="comment">// true </span></div><div class="line"><span class="built_in">Function</span> <span class="keyword">instanceof</span> <span class="built_in">Function</span> <span class="comment">//true</span></div><div class="line"><span class="built_in">Object</span> <span class="keyword">instanceof</span> <span class="built_in">Object</span> <span class="comment">// true</span></div><div class="line"><span class="built_in">Number</span> <span class="keyword">instanceof</span> <span class="built_in">Number</span> <span class="comment">//false</span></div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/erweima.png" alt="sunbaixin wechat" style="width: 200px; max-width: 100%;"/>
+    <div>扫描上方二维码，关注我的博客</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/js/" rel="tag">#js</a>
+          
+            <a href="/tags/原型链/" rel="tag">#原型链</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/19/base_reference_type/" rel="next" title="基本类型和引用类型">
+                <i class="fa fa-chevron-left"></i> 基本类型和引用类型
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/22/BFC/" rel="prev" title="BFC原理">
+                BFC原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/11/21/prototype_chain/"
+     data-title="__proto__（隐式原型）与prototype（显式原型）"
+     data-content=""
+     data-url="http://yoursite.com/2016/11/21/prototype_chain/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/21/prototype_chain/"
+           data-title="__proto__（隐式原型）与prototype（显式原型）" data-url="http://yoursite.com/2016/11/21/prototype_chain/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/head.jpg"
+               alt="sunbaixin" />
+          <p class="site-author-name" itemprop="name">sunbaixin</p>
+          <p class="site-description motion-element" itemprop="description">happy girl</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">47</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/hello-sunbaixin" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://javascript.ruanyifeng.com/" target="_blank" title="阮一峰">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  阮一峰
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、-例子"><span class="nav-number">1.</span> <span class="nav-text">一、 例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、什么是显示原型和隐式原型"><span class="nav-number">2.</span> <span class="nav-text">二、什么是显示原型和隐式原型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、作用是什么"><span class="nav-number">3.</span> <span class="nav-text">三、作用是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、proto的指向？"><span class="nav-number">4.</span> <span class="nav-text">四、proto的指向？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#举例子来巩固一下一个对象的proto指向谁了。"><span class="nav-number">4.1.</span> <span class="nav-text">举例子来巩固一下一个对象的proto指向谁了。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、instanceof"><span class="nav-number">5.</span> <span class="nav-text">五、instanceof</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    total visited<span id="busuanzi_value_site_pv"></span>times
+</span>
+<span id="busuanzi_container_site_uv">
+  <span id="busuanzi_value_site_uv"></span>peoples
+</span>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sunbaixin</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"sunbaixin"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = false;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title >= 0 || index_content >= 0 ){
+                                isMatch = true;
+								if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            } 
+							
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
