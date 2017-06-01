@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="sass," />
+  <meta name="keywords" content="sass,less," />
 
 
 
@@ -84,16 +84,22 @@
 
 
 
-<meta name="description" content="sass入门">
+<meta name="description" content="1.编译环境不一样
+Sass的安装需要Ruby环境，是在服务端处理的，而Less是需要引入less.js来处理Less代码输出css到浏览器，也可以在开发环节使用Less，然后编译成css文件，直接放到项目中，也有 Less.app、SimpleLess、CodeKit.app这样的工具，也有在线编译地址。
+2.语法不通（sass/scss less）为啥将sass后缀为scss 因为sass有严">
 <meta property="og:type" content="article">
-<meta property="og:title" content="sass">
+<meta property="og:title" content="sass less区别">
 <meta property="og:url" content="http://yoursite.com/2016/11/04/sass/index.html">
 <meta property="og:site_name" content="Sunbaixin Blog">
-<meta property="og:description" content="sass入门">
-<meta property="og:updated_time" content="2017-04-01T06:57:40.000Z">
+<meta property="og:description" content="1.编译环境不一样
+Sass的安装需要Ruby环境，是在服务端处理的，而Less是需要引入less.js来处理Less代码输出css到浏览器，也可以在开发环节使用Less，然后编译成css文件，直接放到项目中，也有 Less.app、SimpleLess、CodeKit.app这样的工具，也有在线编译地址。
+2.语法不通（sass/scss less）为啥将sass后缀为scss 因为sass有严">
+<meta property="og:updated_time" content="2017-04-29T13:04:21.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="sass">
-<meta name="twitter:description" content="sass入门">
+<meta name="twitter:title" content="sass less区别">
+<meta name="twitter:description" content="1.编译环境不一样
+Sass的安装需要Ruby环境，是在服务端处理的，而Less是需要引入less.js来处理Less代码输出css到浏览器，也可以在开发环节使用Less，然后编译成css文件，直接放到项目中，也有 Less.app、SimpleLess、CodeKit.app这样的工具，也有在线编译地址。
+2.语法不通（sass/scss less）为啥将sass后缀为scss 因为sass有严">
 
 
 
@@ -117,7 +123,7 @@
   <link rel="canonical" href="http://yoursite.com/2016/11/04/sass/"/>
 
 
-  <title> sass | Sunbaixin Blog </title>
+  <title> sass less区别 | Sunbaixin Blog </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -260,7 +266,7 @@
             
             
               
-                sass
+                sass less区别
               
             
           </h1>
@@ -330,7 +336,15 @@
       
 
       
-        <p><a href="http://www.w3cplus.com/sassguide/" title="sass入门" target="_blank" rel="external">sass入门</a></p>
+        <p>1.编译环境不一样</p>
+<p>Sass的安装需要Ruby环境，是在服务端处理的，而Less是需要引入less.js来处理Less代码输出css到浏览器，也可以在开发环节使用Less，然后编译成css文件，直接放到项目中，也有 Less.app、SimpleLess、CodeKit.app这样的工具，也有在线编译地址。</p>
+<p>2.语法不通（sass/scss less）<br>为啥将sass后缀为scss 因为sass有严格的缩进规则，不可以有{}和; 因为scss更符合css编写习惯</p>
+<ul>
+<li>变量 $ @</li>
+<li>作用域 无局部作用域   有局部作用域</li>
+<li>输出设置（默认嵌套，简洁，多行展开，压缩）less没有</li>
+<li>Sass支持条件语句，可以使用if{}else{},for{}循环等等。而Less不支持。</li>
+</ul>
 
       
     </div>
@@ -359,6 +373,8 @@
         <div class="post-tags">
           
             <a href="/tags/sass/" rel="tag">#sass</a>
+          
+            <a href="/tags/less/" rel="tag">#less</a>
           
         </div>
       
@@ -404,7 +420,7 @@
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="2016/11/04/sass/"
-           data-title="sass" data-url="http://yoursite.com/2016/11/04/sass/">
+           data-title="sass less区别" data-url="http://yoursite.com/2016/11/04/sass/">
       </div>
     
   </div>
@@ -449,7 +465,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">50</span>
+              <span class="site-state-item-count">56</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -457,7 +473,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -466,7 +482,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
