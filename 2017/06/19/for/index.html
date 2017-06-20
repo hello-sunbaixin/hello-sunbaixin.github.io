@@ -84,16 +84,16 @@
 
 
 
-<meta name="description" content="待上传">
+<meta name="description" content="这篇文章主要介绍了全面解析JavaScript里的循环方法之forEach，for-in，for-of的相关资料,非常不错具有参考借鉴价值，需要的朋友可以参考下">
 <meta property="og:type" content="article">
-<meta property="og:title" content="caller 和 callee">
-<meta property="og:url" content="http://yoursite.com/2017/04/29/callee_caller/index.html">
+<meta property="og:title" content="for-in &#x2F;for-of &#x2F;forEach">
+<meta property="og:url" content="http://yoursite.com/2017/06/19/for/index.html">
 <meta property="og:site_name" content="Sunbaixin Blog">
-<meta property="og:description" content="待上传">
-<meta property="og:updated_time" content="2017-06-01T05:48:11.000Z">
+<meta property="og:description" content="这篇文章主要介绍了全面解析JavaScript里的循环方法之forEach，for-in，for-of的相关资料,非常不错具有参考借鉴价值，需要的朋友可以参考下">
+<meta property="og:updated_time" content="2017-06-19T06:34:43.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="caller 和 callee">
-<meta name="twitter:description" content="待上传">
+<meta name="twitter:title" content="for-in &#x2F;for-of &#x2F;forEach">
+<meta name="twitter:description" content="这篇文章主要介绍了全面解析JavaScript里的循环方法之forEach，for-in，for-of的相关资料,非常不错具有参考借鉴价值，需要的朋友可以参考下">
 
 
 
@@ -114,10 +114,10 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/04/29/callee_caller/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/19/for/"/>
 
 
-  <title> caller 和 callee | Sunbaixin Blog </title>
+  <title> for-in /for-of /forEach | Sunbaixin Blog </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -260,7 +260,7 @@
             
             
               
-                caller 和 callee
+                for-in /for-of /forEach
               
             
           </h1>
@@ -272,8 +272,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-04-29T23:51:53+08:00" content="2017-04-29">
-              2017-04-29
+            <time itemprop="dateCreated" datetime="2017-06-19T13:55:34+08:00" content="2017-06-19">
+              2017-06-19
             </time>
           </span>
 
@@ -302,8 +302,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2017/04/29/callee_caller/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/29/callee_caller/" itemprop="commentsCount"></span>
+                <a href="/2017/06/19/for/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/19/for/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -330,7 +330,30 @@
       
 
       
-        <p>待上传</p>
+        <blockquote>
+<p>这篇文章主要介绍了全面解析JavaScript里的循环方法之forEach，for-in，for-of的相关资料,非常不错具有参考借鉴价值，需要的朋友可以参考下</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="for-in"><a href="#for-in" class="headerlink" title="for in"></a>for in</h2><blockquote>
+<p>for in一般用来遍历对象,对象原型上的方法和属性也会遍历到</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Object.prototype.method=function()&#123;</div><div class="line">　　console.log(this);</div><div class="line">&#125;</div><div class="line">var myObject=&#123;</div><div class="line">　　a:1,</div><div class="line">　　b:2,</div><div class="line">　　c:3</div><div class="line">&#125;</div><div class="line">for (var key in myObject) &#123;</div><div class="line">  console.log(key);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>for in 可以遍历到myObject的原型方法method,如果不想遍历原型方法和属性的话，可以在循环内部判断一下,hasOwnPropery方法可以判断某属性是否是该对象的实例属性</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">for (var key in myObject) &#123;</div><div class="line">　　if（myObject.hasOwnProperty(key))&#123;</div><div class="line">　　　　console.log(key);</div><div class="line">　　&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用for in 也可以遍历数组，但是会存在以下问题：</p>
+<p> 1.index索引为字符串型数字，不能直接进行几何运算<br> 2.遍历顺序有可能不是按照实际数组的内部顺序<br> 3.使用for in会遍历数组所有的可枚举属性，包括原型。例如上栗的原型方法method和name属性</p>
+<p>所以for in更适合遍历对象，不要使用for in遍历数组。</p>
+<h2 id="for-of"><a href="#for-of" class="headerlink" title="for of"></a>for of</h2><blockquote>
+<p>for in遍历的是数组的索引（即键名），而for of遍历的是数组元素值。for of遍历的只是数组内的元素，而不包括数组的原型属性method和索引name;</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Array.prototype.method=function()&#123;</div><div class="line">　　console.log(this.length);</div><div class="line">&#125;</div><div class="line">var myArray=[1,2,4,5,6,7]</div><div class="line">myArray.name=&quot;数组&quot;;</div><div class="line">for (var value of myArray) &#123;</div><div class="line">  console.log(value);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="forEach"><a href="#forEach" class="headerlink" title="forEach"></a>forEach</h2><blockquote>
+<p>ES5的话也可以使用forEach;但是使用foreach遍历数组的话，使用break不能中断循环，使用continue不能结束此次循环。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Object.prototype.method=function()&#123;</div><div class="line">　　console.log(this);</div><div class="line">&#125;</div><div class="line">var myObject=&#123;</div><div class="line">　　a:1,</div><div class="line">　　b:2,</div><div class="line">　　c:3</div><div class="line">&#125;</div><div class="line">Object.keys(myObject).forEach(function(key,index)&#123;&lt;br&gt;　　console.log(key,myObject[key])&lt;br&gt;&#125;)</div></pre></td></tr></table></figure>
+<p>通过ES5的Object.keys(myObject)获取对象的实例属性组成的数组，不包括原型方法和属性。</p>
 
       
     </div>
@@ -361,16 +384,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/29/array/" rel="next" title="数组常见算法题">
-                <i class="fa fa-chevron-left"></i> 数组常见算法题
+              <a href="/2017/06/01/fetch-pipe/" rel="next" title="fetch-pipe">
+                <i class="fa fa-chevron-left"></i> fetch-pipe
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/04/30/key/" rel="prev" title="keydown keyup keypress">
-                keydown keyup keypress <i class="fa fa-chevron-right"></i>
+              <a href="/2017/06/20/https/" rel="prev" title="https加密解密过程">
+                https加密解密过程 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -397,8 +420,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/04/29/callee_caller/"
-           data-title="caller 和 callee" data-url="http://yoursite.com/2017/04/29/callee_caller/">
+      <div class="ds-thread" data-thread-key="2017/06/19/for/"
+           data-title="for-in /for-of /forEach" data-url="http://yoursite.com/2017/06/19/for/">
       </div>
     
   </div>
@@ -509,7 +532,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#for-in"><span class="nav-number">1.</span> <span class="nav-text">for in</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#for-of"><span class="nav-number">2.</span> <span class="nav-text">for of</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#forEach"><span class="nav-number">3.</span> <span class="nav-text">forEach</span></a></li></ol></div>
             
           </div>
         </section>
