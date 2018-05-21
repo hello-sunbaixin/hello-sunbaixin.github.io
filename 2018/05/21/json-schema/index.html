@@ -1,0 +1,1060 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="json jsonschema," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="JSON SCHEMA是一种基于JSON格式定义JSON数据结构的规范，JSON SCHEMA 用于描述现有数据格式，干净的人类和机器可读的文档，完整的结构验证，有利于自动化测试，可用于验证客户端提交的数据">
+<meta name="keywords" content="json jsonschema">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何定义一个json-schema">
+<meta property="og:url" content="http://yoursite.com/2018/05/21/json-schema/index.html">
+<meta property="og:site_name" content="Sunbaixin Blog">
+<meta property="og:description" content="JSON SCHEMA是一种基于JSON格式定义JSON数据结构的规范，JSON SCHEMA 用于描述现有数据格式，干净的人类和机器可读的文档，完整的结构验证，有利于自动化测试，可用于验证客户端提交的数据">
+<meta property="og:updated_time" content="2018-05-21T08:15:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何定义一个json-schema">
+<meta name="twitter:description" content="JSON SCHEMA是一种基于JSON格式定义JSON数据结构的规范，JSON SCHEMA 用于描述现有数据格式，干净的人类和机器可读的文档，完整的结构验证，有利于自动化测试，可用于验证客户端提交的数据">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/21/json-schema/"/>
+
+
+  <title> 如何定义一个json-schema | Sunbaixin Blog </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta custom-logo">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sunbaixin Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Goals determine what you are going to be</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何定义一个json-schema
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-05-21T16:08:48+08:00" content="2018-05-21">
+              2018-05-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/json/" itemprop="url" rel="index">
+                    <span itemprop="name">json</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2018/05/21/json-schema/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/05/21/json-schema/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+
+  
+        
+          
+
+          
+    
+
+    </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p> JSON SCHEMA是一种基于JSON格式定义JSON数据结构的规范，JSON SCHEMA<br> 用于描述现有数据格式，干净的人类和机器可读的文档，完整的结构验证，有利于自动化测试，可用于验证客户端提交的数据</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="文档贡献"><a href="#文档贡献" class="headerlink" title="文档贡献"></a>文档贡献</h2><ul>
+<li><a href="http://json-schema.org/" target="_blank" rel="external">json-schema</a> json-schema官网</li>
+<li><a href="https://spacetelescope.github.io/understanding-json-schema/about.html" target="_blank" rel="external">understanding-json-schema</a> <strong>该官网详细列举每种数据类型如何定义</strong></li>
+<li><a href="https://jsonschema.net/#/home" target="_blank" rel="external">生成jsonschema的工具</a></li>
+<li><a href="https://jsonschemalint.com/#/version/draft-06/markup/json" target="_blank" rel="external">jsonschema lint</a></li>
+</ul>
+<h2 id="什么是JSON-Schema？"><a href="#什么是JSON-Schema？" class="headerlink" title="什么是JSON Schema？"></a>什么是JSON Schema？</h2><p>JSON Schema 定义了如何基于 JSON 格式描述 JSON 数据结构的规范，进而提供数据校验、文档生成和接口数据交互控制等一系列能力<br>它的特性和用途，可以大致归纳为以下几点：</p>
+<ul>
+<li>用于描述数据结构</li>
+<li>用于构建人机可读的文档</li>
+<li>用于生成模拟数据</li>
+<li>用于校验数据，实现自动化测试</li>
+</ul>
+<h2 id="JSON-Schema可以解决下列有关一致性验证的问题。"><a href="#JSON-Schema可以解决下列有关一致性验证的问题。" class="headerlink" title="JSON Schema可以解决下列有关一致性验证的问题。"></a>JSON Schema可以解决下列有关一致性验证的问题。</h2><p>1、  值的数据类型是否正确：可以具体规定一个值是数字、字符串等类型；<br>2、  是否包含所需的数据：可以规定哪些数据是需要的，哪些是不需要的；<br>3、  值的形式是不是我需要的：可以指定范围、最小值和最大值。  </p>
+<h2 id="如何定义一个json-schema"><a href="#如何定义一个json-schema" class="headerlink" title="如何定义一个json schema"></a>如何定义一个json schema</h2><p>字段解释：</p>
+<h3 id="基础字段"><a href="#基础字段" class="headerlink" title="基础字段"></a>基础字段</h3><table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$schema</td>
+<td>关键字，表示遵循的草稿标准，不是必须字段</td>
+<td><a href="http://json-schema.org/draft-07/schema#" target="_blank" rel="external">http://json-schema.org/draft-07/schema#</a></td>
+</tr>
+<tr>
+<td>title</td>
+<td>题目</td>
+<td>“json schema”</td>
+</tr>
+<tr>
+<td>description</td>
+<td>描述</td>
+<td>“这是一段json-schema”</td>
+</tr>
+<tr>
+<td>type</td>
+<td>字段类型</td>
+<td>“object”</td>
+</tr>
+<tr>
+<td>properties</td>
+<td>定义属性</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>required</td>
+<td>必须属性</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
+<h3 id="object"><a href="#object" class="headerlink" title="object"></a><a href="https://spacetelescope.github.io/understanding-json-schema/reference/object.html" target="_blank" rel="external">object</a></h3><table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>类型</td>
+<td>.</td>
+</tr>
+<tr>
+<td>properties</td>
+<td>定义属性</td>
+<td></td>
+</tr>
+<tr>
+<td>required</td>
+<td>必需属性</td>
+<td></td>
+</tr>
+<tr>
+<td>maxProperties</td>
+<td>最大属性个数</td>
+<td></td>
+</tr>
+<tr>
+<td>minProperties</td>
+<td>最小属性个数</td>
+<td></td>
+</tr>
+<tr>
+<td>additionalProperties</td>
+<td>是否允许有额外属性</td>
+<td><a href="https://spacetelescope.github.io/understanding-json-schema/reference/object.html?highlight=patternproperties#properties" target="_blank" rel="external">示例</a></td>
+</tr>
+<tr>
+<td>Dependencies</td>
+<td>属性依赖</td>
+<td><a href="https://spacetelescope.github.io/understanding-json-schema/reference/object.html?highlight=patternproperties#dependencies" target="_blank" rel="external">用法</a></td>
+</tr>
+<tr>
+<td>patternProperties</td>
+<td>正则表达属性的格式</td>
+<td><a href="https://spacetelescope.github.io/understanding-json-schema/reference/object.html?highlight=patternproperties#pattern-properties" target="_blank" rel="external">用法</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="array"><a href="#array" class="headerlink" title="array"></a><a href="https://spacetelescope.github.io/understanding-json-schema/reference/array.html" target="_blank" rel="external">array</a></h3><table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>items</td>
+<td>array 每个元素的类型</td>
+<td>.</td>
+</tr>
+<tr>
+<td>minItems</td>
+<td>约束属性，数组最小的元素个数</td>
+<td></td>
+</tr>
+<tr>
+<td>maxItems</td>
+<td>约束属性，数组最大的元素个数</td>
+<td></td>
+</tr>
+<tr>
+<td>uniqueItems</td>
+<td>约束属性，每个元素都不相同</td>
+<td></td>
+</tr>
+<tr>
+<td>additionalItems</td>
+<td>是否可以有额外条目</td>
+<td><a href="https://spacetelescope.github.io/understanding-json-schema/reference/array.html#uniqueness" target="_blank" rel="external">示例</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>maxLength</td>
+<td>定义字符串的最大长度，&gt;=0</td>
+<td>.</td>
+</tr>
+<tr>
+<td>minLength</td>
+<td>定义字符串的最小长度，&gt;=0</td>
+<td></td>
+</tr>
+<tr>
+<td>pattern</td>
+<td>用正则表达式约束字符串</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="integer"><a href="#integer" class="headerlink" title="integer"></a>integer</h3><table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>minimum</td>
+<td>最小值</td>
+<td>.</td>
+</tr>
+<tr>
+<td>exclusiveMinimum</td>
+<td>如果存在 “exclusiveMinimum” 并且具有布尔值 true，如果它严格意义上大于 “minimum” 的值则实例有效。</td>
+<td></td>
+</tr>
+<tr>
+<td>maximum</td>
+<td>约束属性，最大值</td>
+<td></td>
+</tr>
+<tr>
+<td>exclusiveMaximum</td>
+<td>如果存在 “exclusiveMinimum” 并且具有布尔值 true，如果它严格意义上小于 “maximum” 的值则实例有效。</td>
+<td></td>
+</tr>
+<tr>
+<td>multipleOf</td>
+<td>是某数的倍数，必须大于0的整数</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="number"><a href="#number" class="headerlink" title="number"></a>number</h3><table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>minimum</td>
+<td>最小值</td>
+<td>.</td>
+</tr>
+<tr>
+<td>exclusiveMinimum</td>
+<td>如果存在 “exclusiveMinimum” 并且具有布尔值 true，如果它严格意义上大于 “minimum” 的值则实例有效。</td>
+<td></td>
+</tr>
+<tr>
+<td>maximum</td>
+<td>约束属性，最大值</td>
+<td></td>
+</tr>
+<tr>
+<td>exclusiveMaximum</td>
+<td>如果存在 “exclusiveMinimum” 并且具有布尔值 true，如果它严格意义上小于 “maximum” 的值则实例有效。</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="boolean"><a href="#boolean" class="headerlink" title="boolean"></a>boolean</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">true or false</div></pre></td></tr></table></figure>
+<h3 id="null"><a href="#null" class="headerlink" title="null"></a>null</h3><h3 id="enum"><a href="#enum" class="headerlink" title="enum"></a>enum</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;type&quot;: &quot;object&quot;,</div><div class="line">  &quot;properties&quot;: &#123;</div><div class="line">    &quot;number&quot;:      &#123; &quot;type&quot;: &quot;number&quot; &#125;,</div><div class="line">    &quot;street_name&quot;: &#123; &quot;type&quot;: &quot;string&quot; &#125;,</div><div class="line">    &quot;street_type&quot;: &#123; &quot;type&quot;: &quot;string&quot;,</div><div class="line">                     &quot;enum&quot;: [&quot;Street&quot;, &quot;Avenue&quot;, &quot;Boulevard&quot;]</div><div class="line">                   &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>了解了上面的各个类型的定义及约定条件，就可以满足大部分情况了。但为了写出更好的json schema,我们再学习几个关键字</p>
+<h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a><a href="https://spacetelescope.github.io/understanding-json-schema/reference/combining.html" target="_blank" rel="external">进阶</a></h2><h3 id="ref-id"><a href="#ref-id" class="headerlink" title="$ref id"></a><a href="https://spacetelescope.github.io/understanding-json-schema/structuring.html?highlight=ref" target="_blank" rel="external">$ref id</a></h3><p>$ref 用来引用其它schema</p>
+<h3 id="definitions"><a href="#definitions" class="headerlink" title="definitions"></a><a href="https://spacetelescope.github.io/understanding-json-schema/structuring.html?highlight=definitions" target="_blank" rel="external">definitions</a></h3><p>当一个schema写的很大的时候，可能需要创建内部结构体，再使用$ref进行引用</p>
+<h3 id="allOf"><a href="#allOf" class="headerlink" title="allOf"></a>allOf</h3><p>意思是展示全部属性，建议用requires替代</p>
+<h3 id="anyof"><a href="#anyof" class="headerlink" title="anyof"></a>anyof</h3><p>意思是展示任意属性，建议用requires替代和minProperties替代</p>
+<h3 id="oneOf"><a href="#oneOf" class="headerlink" title="oneOf"></a>oneOf</h3><p>属性之一</p>
+<h3 id="not"><a href="#not" class="headerlink" title="not"></a>not</h3><p>不是某些属性</p>
+<h2 id="综合demo"><a href="#综合demo" class="headerlink" title="综合demo"></a>综合demo</h2><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;$schema&quot;: &quot;http://json-schema.org/draft-07/schema#&quot;,</div><div class="line">  &quot;$id&quot;: &quot;http://openweb.baidu.com:3000/dist/schemas/page.json&quot;,</div><div class="line">  &quot;description&quot;: &quot;OpenWeb Page 渲染器&quot;,</div><div class="line">  </div><div class="line">  &quot;type&quot;: &quot;object&quot;,</div><div class="line">  &quot;definitions&quot;:</div><div class="line">  &#123;</div><div class="line">    &quot;stringOrNull&quot;:</div><div class="line">    &#123;</div><div class="line">      &quot;description&quot;: &quot;字符或者 null&quot;,</div><div class="line">      &quot;oneOf&quot;: [</div><div class="line">      &#123;</div><div class="line">        &quot;type&quot;: &quot;string&quot;</div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        &quot;type&quot;: &quot;null&quot;</div><div class="line">      &#125;]</div><div class="line">    &#125;,</div><div class="line">     &quot;string&quot;: &#123;</div><div class="line">            &quot;description&quot;: &quot;字符串格式&quot;,</div><div class="line">            &quot;type&quot;: &quot;string&quot;</div><div class="line">        &#125;,</div><div class="line">    &quot;container&quot;:</div><div class="line">    &#123;</div><div class="line">      &quot;oneOf&quot;: [</div><div class="line">      &#123;</div><div class="line">        &quot;$ref&quot;: &quot;#/definitions/string&quot;,</div><div class="line">        &quot;description&quot;: &quot;当值为字符串时会被当做模板来处理，要指定其他渲染类型请使用对象定义如：\n&#123;\n\n\t  \&quot;type\&quot;: \&quot;form\&quot; \n &#125; \n 可通过 $xxx 或者 $&#123;xxx&#125; 取值，或者直接用 lodash.template 模板引擎。\n\n&quot;</div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        &quot;$ref&quot;: &quot;#/definitions/subRenderer&quot;</div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        &quot;items&quot;:</div><div class="line">        &#123;</div><div class="line">          &quot;$ref&quot;: &quot;#/definitions/container&quot;</div><div class="line">        &#125;,</div><div class="line">        &quot;type&quot;: &quot;array&quot;</div><div class="line">      &#125;]</div><div class="line">    &#125;,</div><div class="line">     &quot;subRenderer&quot;: &#123;</div><div class="line">        &quot;oneOf&quot;:[&#123;</div><div class="line">               &quot;$ref&quot;:&quot;http://openweb.baidu.com:3000/dist/schemas/form.json&quot; </div><div class="line">                &#125;]</div><div class="line">     &#125;</div><div class="line">  &#125;,</div><div class="line">  &quot;properties&quot;:</div><div class="line">  &#123;</div><div class="line">    &quot;$schema&quot;:</div><div class="line">    &#123;</div><div class="line">      &quot;description&quot;: &quot;绑定 JSON 格式说明，可忽略！&quot;,</div><div class="line">      &quot;format&quot;: &quot;uri&quot;,</div><div class="line">      &quot;type&quot;: &quot;string&quot;</div><div class="line">    &#125;,</div><div class="line">    &quot;body&quot;:</div><div class="line">        &#123;</div><div class="line">            &quot;items&quot;:</div><div class="line">                &#123;</div><div class="line">                    &quot;$ref&quot;: &quot;#/definitions/container&quot;</div><div class="line">                &#125;,</div><div class="line">            &quot;type&quot;: &quot;array&quot;,</div><div class="line">            &quot;title&quot;: &quot;页面内容区域&quot;</div><div class="line">        &#125;,</div><div class="line">    &quot;title&quot;:</div><div class="line">    &#123;</div><div class="line">      &quot;$ref&quot;: &quot;#/definitions/stringOrNull&quot;,</div><div class="line">      &quot;description&quot;: &quot;页面标题&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/erweima.png" alt="sunbaixin wechat" style="width: 200px; max-width: 100%;"/>
+    <div>扫描上方二维码，关注我的博客</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/json-jsonschema/" rel="tag">#json jsonschema</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/11/hexo/" rel="next" title="hexo">
+                <i class="fa fa-chevron-left"></i> hexo
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2018/05/21/json-schema/"
+           data-title="如何定义一个json-schema" data-url="http://yoursite.com/2018/05/21/json-schema/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/head3.jpg"
+               alt="sunbaixin" />
+          <p class="site-author-name" itemprop="name">sunbaixin</p>
+          <p class="site-description motion-element" itemprop="description">Confidence optimistic</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">61</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/hello-sunbaixin" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://javascript.ruanyifeng.com/" target="_blank" title="阮一峰">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  阮一峰
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文档贡献"><span class="nav-number">1.</span> <span class="nav-text">文档贡献</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是JSON-Schema？"><span class="nav-number">2.</span> <span class="nav-text">什么是JSON Schema？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON-Schema可以解决下列有关一致性验证的问题。"><span class="nav-number">3.</span> <span class="nav-text">JSON Schema可以解决下列有关一致性验证的问题。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何定义一个json-schema"><span class="nav-number">4.</span> <span class="nav-text">如何定义一个json schema</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础字段"><span class="nav-number">4.1.</span> <span class="nav-text">基础字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#object"><span class="nav-number">4.2.</span> <span class="nav-text">object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#array"><span class="nav-number">4.3.</span> <span class="nav-text">array</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string"><span class="nav-number">4.4.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#integer"><span class="nav-number">4.5.</span> <span class="nav-text">integer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#number"><span class="nav-number">4.6.</span> <span class="nav-text">number</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boolean"><span class="nav-number">4.7.</span> <span class="nav-text">boolean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">4.8.</span> <span class="nav-text">null</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#enum"><span class="nav-number">4.9.</span> <span class="nav-text">enum</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进阶"><span class="nav-number">5.</span> <span class="nav-text">进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ref-id"><span class="nav-number">5.1.</span> <span class="nav-text">$ref id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#definitions"><span class="nav-number">5.2.</span> <span class="nav-text">definitions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#allOf"><span class="nav-number">5.3.</span> <span class="nav-text">allOf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#anyof"><span class="nav-number">5.4.</span> <span class="nav-text">anyof</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#oneOf"><span class="nav-number">5.5.</span> <span class="nav-text">oneOf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not"><span class="nav-number">5.6.</span> <span class="nav-text">not</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#综合demo"><span class="nav-number">6.</span> <span class="nav-text">综合demo</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+    total visited<span id="busuanzi_value_site_pv"></span>times
+</span>
+<span id="busuanzi_container_site_uv">
+  <span id="busuanzi_value_site_uv"></span>peoples
+</span>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sunbaixin</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"sunbaixin"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = false;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title >= 0 || index_content >= 0 ){
+                                isMatch = true;
+								if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            } 
+							
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
